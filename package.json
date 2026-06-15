@@ -1,0 +1,13 @@
+{
+  "name": "book-store",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev:backend & npm run dev:frontend",
+    "dev:backend": "npm --prefix backend run start:dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build": "npm --prefix backend run build && npm --prefix frontend run build",
+    "test": "npm --prefix backend run test && npm --prefix frontend run test",
+    "test:cov": "npm --prefix backend run test:cov",
+    "lint": "npm --prefix backend run lint && npm --prefix frontend run lint"
+  }
+}
