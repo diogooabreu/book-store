@@ -1,10 +1,10 @@
-import { PrismaClient } from '../src/generated/client.js';
-import { Role } from '../src/generated/enums.js';
+import { PrismaClient } from '../src/generated/client';
+import { Role } from '../src/generated/enums';
+import { PrismaPg } from '@prisma/adapter-pg';
 import * as bcrypt from 'bcrypt';
 
-const prisma = new PrismaClient({
-  datasources: { db: { url: process.env.DATABASE_URL } },
-});
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
   const hashedPassword = await bcrypt.hash('admin123', 10);
