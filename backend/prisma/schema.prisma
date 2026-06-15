@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  READER
+  LIBRARIAN
+  ADMIN
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  role      Role     @default(READER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  loans     Loan[]
+
+  @@map("users")
+}
+
+model Author {
+  id          String   @id @default(uuid())
+  name        String
+  nationality String?
+  deletedAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  books       Book[]
+
+  @@map("authors")
+}
+
+model Book {
+  id        String   @id @default(uuid())
+  title     String
+  isbn      String   @unique
+  stock     Int      @default(0)
+  authorId  String
+  author    Author   @relation(fields: [authorId], references: [id])
+  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  loans     Loan[]
+
+  @@map("books")
+}
+
+model Loan {
+  id              String    @id @default(uuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  bookId          String
+  book            Book      @relation(fields: [bookId], references: [id])
+  loanDate        DateTime  @default(now())
+  returnDate      DateTime
+  actualReturnDate DateTime?
+  returned        Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([userId, returned])
+  @@map("loans")
+}

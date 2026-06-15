@@ -35,5 +35,9 @@ build/
 # Testes
 coverage/
 
+# Temporários
+tmp/
+tmp
+
 # Docker
 docker-compose.override.yml
