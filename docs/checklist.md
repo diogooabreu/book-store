@@ -15,22 +15,22 @@
 ---
 
 ## RA2 - Desenvolvimento Backend Assistido por IA
-* [ ] **ID5:** O codigo NestJS mantem **separacao estrita de camadas** arquiteturais (Controllers, Services, Modules).
-* [ ] **ID6:** Aplicou **DTOs** e `ValidationPipes` (com `whitelist`) para blindar as entradas da API.
-* [ ] **ID7:** Implementou operacoes **CRUD relacionais** utilizando Prisma ORM.
-* [ ] **ID8:** Configurou **autenticacao JWT** e protegeu rotas atraves de controle de acesso (Roles/Guards).
+* [x] **ID5:** O codigo NestJS mantem **separacao estrita de camadas** arquiteturais (Controllers, Services, Modules).
+* [x] **ID6:** Aplicou **DTOs** e `ValidationPipes` (com `whitelist`) para blindar as entradas da API.
+* [x] **ID7:** Implementou operacoes **CRUD relacionais** utilizando Prisma ORM.
+* [x] **ID8:** Configurou **autenticacao JWT** e protegeu rotas atraves de controle de acesso (Roles/Guards).
 * [ ] **ID9:** Padronizou o trafego com **Interceptors** para respostas e **Exception Filters** globais para erros.
 
 ---
 
 ## RA3 - Qualidade de Software e TDD Guiado por IA
-* [ ] **ID10:** Orquestrou a IA no fluxo **TDD**, gerando testes automatizados (Jest) baseados nas Issues antes da implementacao da logica.
-* [ ] **ID11:** Os **testes** locais ou no pipeline executam com sucesso, cobrindo caminhos de sucesso e erro.
+* [x] **ID10:** Orquestrou a IA no fluxo **TDD**, gerando testes automatizados (Jest) baseados nas Issues antes da implementacao da logica.
+* [x] **ID11:** Os **testes** locais ou no pipeline executam com sucesso, cobrindo caminhos de sucesso e erro.
 
 ---
 
 ## RA4 - Prototipagem e Integracao Frontend
-* [ ] **ID12:** A API do backend expoe documentacao **Swagger (OpenAPI)** atualizada e interativa.
+* [x] **ID12:** A API do backend expoe documentacao **Swagger (OpenAPI)** atualizada e interativa.
 * [ ] **ID13:** Materializou o PRD em **interfaces visuais** (React/Angular/Vue) utilizando prototipagem assistida por IA.
 * [ ] **ID14:** A interface consome os dados reais da API NestJS de forma sincrona, lidando corretamente com os **tokens JWT**.
 
