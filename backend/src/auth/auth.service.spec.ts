@@ -6,15 +6,20 @@ import * as bcrypt from 'bcrypt';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
 
 jest.mock('../prisma/prisma.service', () => ({
-  PrismaService: jest.fn().mockImplementation(() => mockPrisma()),
+  PrismaService: jest.fn().mockImplementation(() => ({
+    user: {
+      findUnique: jest.fn(),
+      create: jest.fn(),
+    },
+  })),
 }));
 
-const mockPrisma = () => ({
+interface MockPrisma {
   user: {
-    findUnique: jest.fn(),
-    create: jest.fn(),
-  },
-});
+    findUnique: jest.Mock;
+    create: jest.Mock;
+  };
+}
 
 const mockJwt = {
   sign: jest.fn().mockReturnValue('fake-jwt-token'),
@@ -37,7 +42,7 @@ describe('AuthService', () => {
     const registerDto = { email: 'novo@teste.com', password: '123456' };
 
     it('deve criar um usuário com role READER e retornar sem a senha', async () => {
-      const prisma = module.get(PrismaService);
+      const prisma = module.get<MockPrisma>(PrismaService);
       prisma.user.findUnique.mockResolvedValue(null);
       prisma.user.create.mockResolvedValue({
         id: 'uuid-1',
@@ -54,7 +59,7 @@ describe('AuthService', () => {
     });
 
     it('deve lançar ConflictException se o email já existir', async () => {
-      const prisma = module.get(PrismaService);
+      const prisma = module.get<MockPrisma>(PrismaService);
       prisma.user.findUnique.mockResolvedValue({ id: 'existing', email: registerDto.email });
 
       await expect(service.register(registerDto)).rejects.toThrow(ConflictException);
@@ -66,7 +71,7 @@ describe('AuthService', () => {
     const hashedPassword = bcrypt.hashSync('123456', 10);
 
     it('deve retornar um accessToken para credenciais válidas', async () => {
-      const prisma = module.get(PrismaService);
+      const prisma = module.get<MockPrisma>(PrismaService);
       prisma.user.findUnique.mockResolvedValue({
         id: 'uuid-1',
         email: loginDto.email,
@@ -81,7 +86,7 @@ describe('AuthService', () => {
     });
 
     it('deve lançar UnauthorizedException para senha incorreta', async () => {
-      const prisma = module.get(PrismaService);
+      const prisma = module.get<MockPrisma>(PrismaService);
       prisma.user.findUnique.mockResolvedValue({
         id: 'uuid-1',
         email: loginDto.email,
@@ -94,7 +99,7 @@ describe('AuthService', () => {
     });
 
     it('deve lançar UnauthorizedException para email inexistente', async () => {
-      const prisma = module.get(PrismaService);
+      const prisma = module.get<MockPrisma>(PrismaService);
       prisma.user.findUnique.mockResolvedValue(null);
 
       await expect(service.login(loginDto)).rejects.toThrow(UnauthorizedException);

@@ -1,5 +1,4 @@
-import { PrismaClient } from '../src/generated/client';
-import { Role } from '../src/generated/enums';
+import { PrismaClient, Role } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import * as bcrypt from 'bcrypt';
 

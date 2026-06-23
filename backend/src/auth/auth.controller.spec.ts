@@ -5,13 +5,16 @@ import { RegisterUserDto } from './dto/register-user.dto';
 import { LoginDto } from './dto/login.dto';
 
 jest.mock('./auth.service', () => ({
-  AuthService: jest.fn().mockImplementation(() => mockAuthService()),
+  AuthService: jest.fn().mockImplementation(() => ({
+    register: jest.fn(),
+    login: jest.fn(),
+  })),
 }));
 
-const mockAuthService = () => ({
-  register: jest.fn(),
-  login: jest.fn(),
-});
+interface MockAuthService {
+  register: jest.Mock;
+  login: jest.Mock;
+}
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -32,7 +35,7 @@ describe('AuthController', () => {
       const dto: RegisterUserDto = { email: 'novo@teste.com', password: '123456' };
       const expected = { id: 'uuid-1', email: dto.email, role: 'READER', createdAt: new Date() };
 
-      const authService = module.get(AuthService);
+      const authService = module.get<MockAuthService>(AuthService);
       authService.register.mockResolvedValue(expected);
 
       const result = await controller.register(dto);
@@ -47,7 +50,7 @@ describe('AuthController', () => {
       const dto: LoginDto = { email: 'user@teste.com', password: '123456' };
       const expected = { accessToken: 'jwt-token' };
 
-      const authService = module.get(AuthService);
+      const authService = module.get<MockAuthService>(AuthService);
       authService.login.mockResolvedValue(expected);
 
       const result = await controller.login(dto);

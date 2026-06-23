@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  DefaultValuePipe,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -44,13 +56,13 @@ export class BooksController {
   @ApiQuery({ name: 'limit', required: false, example: '10' })
   @ApiQuery({ name: 'search', required: false, example: 'Senhor' })
   async findAll(
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
     @Query('search') search?: string,
   ) {
     return this.booksService.findAll({
-      page: Number(page) || 1,
-      limit: Number(limit) || 10,
+      page,
+      limit,
       search,
     });
   }

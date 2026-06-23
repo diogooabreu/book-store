@@ -3,16 +3,22 @@ import { BooksController } from './books.controller';
 import { BooksService } from './books.service';
 
 jest.mock('./books.service', () => ({
-  BooksService: jest.fn().mockImplementation(() => mockBooksService()),
+  BooksService: jest.fn().mockImplementation(() => ({
+    create: jest.fn(),
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+  })),
 }));
 
-const mockBooksService = () => ({
-  create: jest.fn(),
-  findAll: jest.fn(),
-  findOne: jest.fn(),
-  update: jest.fn(),
-  remove: jest.fn(),
-});
+interface MockBooksService {
+  create: jest.Mock;
+  findAll: jest.Mock;
+  findOne: jest.Mock;
+  update: jest.Mock;
+  remove: jest.Mock;
+}
 
 describe('BooksController', () => {
   let controller: BooksController;
@@ -47,7 +53,7 @@ describe('BooksController', () => {
         stock: 5,
         authorId: 'author-uuid',
       };
-      const service = module.get(BooksService);
+      const service = module.get<MockBooksService>(BooksService);
       service.create.mockResolvedValue(mockBook);
 
       const result = await controller.create(dto);
@@ -59,7 +65,7 @@ describe('BooksController', () => {
 
   describe('findAll', () => {
     it('deve listar livros com paginação', async () => {
-      const service = module.get(BooksService);
+      const service = module.get<MockBooksService>(BooksService);
       const paginatedResult = {
         data: [mockBook],
         meta: { page: 1, limit: 10, total: 1 },
@@ -75,7 +81,7 @@ describe('BooksController', () => {
 
   describe('findOne', () => {
     it('deve retornar um livro pelo ID', async () => {
-      const service = module.get(BooksService);
+      const service = module.get<MockBooksService>(BooksService);
       service.findOne.mockResolvedValue(mockBook);
 
       const result = await controller.findOne('book-uuid');
@@ -86,7 +92,7 @@ describe('BooksController', () => {
 
   describe('update', () => {
     it('deve atualizar um livro', async () => {
-      const service = module.get(BooksService);
+      const service = module.get<MockBooksService>(BooksService);
       const dto = { title: 'Título Atualizado' };
       const updated = { ...mockBook, title: 'Título Atualizado' };
       service.update.mockResolvedValue(updated);
@@ -100,7 +106,7 @@ describe('BooksController', () => {
 
   describe('remove', () => {
     it('deve remover um livro (soft delete)', async () => {
-      const service = module.get(BooksService);
+      const service = module.get<MockBooksService>(BooksService);
       service.remove.mockResolvedValue(undefined);
 
       await controller.remove('book-uuid');
