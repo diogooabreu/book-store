@@ -21,6 +21,7 @@ yarn-error.log*
 dist/
 build/
 .turbo
+.tsbuildinfo
 
 # IDE e editores
 .vscode/

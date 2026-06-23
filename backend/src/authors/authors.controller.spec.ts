@@ -3,16 +3,22 @@ import { AuthorsController } from './authors.controller';
 import { AuthorsService } from './authors.service';
 
 jest.mock('./authors.service', () => ({
-  AuthorsService: jest.fn().mockImplementation(() => mockAuthorsService()),
+  AuthorsService: jest.fn().mockImplementation(() => ({
+    create: jest.fn(),
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+  })),
 }));
 
-const mockAuthorsService = () => ({
-  create: jest.fn(),
-  findAll: jest.fn(),
-  findOne: jest.fn(),
-  update: jest.fn(),
-  remove: jest.fn(),
-});
+interface MockAuthorsService {
+  create: jest.Mock;
+  findAll: jest.Mock;
+  findOne: jest.Mock;
+  update: jest.Mock;
+  remove: jest.Mock;
+}
 
 describe('AuthorsController', () => {
   let controller: AuthorsController;
@@ -40,7 +46,7 @@ describe('AuthorsController', () => {
   describe('create', () => {
     it('deve criar um autor e retornar 201', async () => {
       const dto = { name: 'J.R.R. Tolkien', nationality: 'Britânico' };
-      const service = module.get(AuthorsService);
+      const service = module.get<MockAuthorsService>(AuthorsService);
       service.create.mockResolvedValue(mockAuthor);
 
       const result = await controller.create(dto);
@@ -52,7 +58,7 @@ describe('AuthorsController', () => {
 
   describe('findAll', () => {
     it('deve listar autores com paginação', async () => {
-      const service = module.get(AuthorsService);
+      const service = module.get<MockAuthorsService>(AuthorsService);
       const paginatedResult = {
         data: [mockAuthor],
         meta: { page: 1, limit: 10, total: 1 },
@@ -66,7 +72,7 @@ describe('AuthorsController', () => {
     });
 
     it('deve listar autores com busca por nome', async () => {
-      const service = module.get(AuthorsService);
+      const service = module.get<MockAuthorsService>(AuthorsService);
       const paginatedResult = {
         data: [mockAuthor],
         meta: { page: 1, limit: 10, total: 1 },
@@ -82,7 +88,7 @@ describe('AuthorsController', () => {
 
   describe('findOne', () => {
     it('deve retornar um autor pelo ID', async () => {
-      const service = module.get(AuthorsService);
+      const service = module.get<MockAuthorsService>(AuthorsService);
       service.findOne.mockResolvedValue(mockAuthor);
 
       const result = await controller.findOne('author-uuid');
@@ -93,7 +99,7 @@ describe('AuthorsController', () => {
 
   describe('update', () => {
     it('deve atualizar um autor', async () => {
-      const service = module.get(AuthorsService);
+      const service = module.get<MockAuthorsService>(AuthorsService);
       const dto = { name: 'Nome Atualizado' };
       const updated = { ...mockAuthor, name: 'Nome Atualizado' };
       service.update.mockResolvedValue(updated);
@@ -107,7 +113,7 @@ describe('AuthorsController', () => {
 
   describe('remove', () => {
     it('deve remover um autor (soft delete)', async () => {
-      const service = module.get(AuthorsService);
+      const service = module.get<MockAuthorsService>(AuthorsService);
       service.remove.mockResolvedValue(undefined);
 
       await controller.remove('author-uuid');
